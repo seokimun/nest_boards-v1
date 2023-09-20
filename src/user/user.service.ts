@@ -7,18 +7,36 @@ import { Repository } from 'typeorm/repository/Repository';
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private usersRepository: Repository<User>,
-    ) {}
+        private userRepository: Repository<User>,
+    ) {
+        this.userRepository = userRepository
+    }
 
+    // User 리스트 조회
     findAll(): Promise<User[]>{
-        return this.usersRepository.find();
+        return this.userRepository.find();
     }
 
-    findOne(id: number): Promise<User | null>{
-        return this.usersRepository.findOneBy({id});
+    // 특정유저 조회
+    findOne(id: number): Promise<User>{
+        return this.userRepository.findOneBy({id});
     }
 
-    async remove(id: number): Promise<void> {
-        await this.usersRepository.delete(id);
+    // 유저저장
+    async saveUser(user: User): Promise<void> {
+        await this.userRepository.save(user);
+    }
+
+    // 유저수정
+    async updateUser(id: number, user: User): Promise<void> {
+        await this. userRepository.update(
+        id,
+        user
+        );
+    }
+
+    // 유저삭제
+    async deleteUser(id: number): Promise<void> {
+        await this.userRepository.delete(id);
     }
 }
