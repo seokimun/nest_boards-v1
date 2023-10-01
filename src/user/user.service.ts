@@ -1,39 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user.entity';
+import { AuthDTO } from 'src/auth/dto/authDto';
+import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
 
 @Injectable()
 export class UserService {
+  findByPassword(password: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-  ) {
-    this.userRepository = userRepository;
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
+
+  async create(authDTO: AuthDTO.SignUp) {
+    const userEntity = await this.userRepository.create(authDTO);
+    return await this.userRepository.save(userEntity);
   }
 
-  // User 리스트 조회
-  findAll(): Promise<User[]> {
+  findAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
   }
 
-  // 특정유저 조회
-  findOne(id: number): Promise<User> {
-    return this.userRepository.findOneBy({ id });
+  async findById(id: number) {
+    return await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  // 유저저장
-  async saveUser(user: User): Promise<void> {
-    await this.userRepository.save(user);
+  async findByEmail(email: string) {
+    return await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
   }
 
-  // 유저수정
-  async updateUser(id: number, user: User): Promise<void> {
-    await this.userRepository.update(id, user);
-  }
-
-  // 유저삭제
-  async deleteUser(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+  async findByNickname(nickname: string) {
+    return await this.userRepository.findOne({
+      where: {
+        nickname,
+      },
+    });
   }
 }
