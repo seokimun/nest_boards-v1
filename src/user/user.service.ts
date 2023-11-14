@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthDTO } from 'src/auth/dto/authDto';
 import { UserEntity } from 'src/user/user.entity';
@@ -11,43 +11,30 @@ export class UserService {
   }
   constructor(
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(authDTO: AuthDTO.SignUp) {
+  async create(authDTO: AuthDTO.SignUp): Promise<UserEntity> {
     const userEntity = await this.userRepository.create(authDTO);
     return await this.userRepository.save(userEntity);
   }
 
   findAll(): Promise<UserEntity[]> {
-    return this.userRepository.find();
-  }
-
-  async findById(id: number) {
-    return await this.userRepository.findOne({
-      where: {
-        id,
-      },
+    return this.userRepository.find({
+      withDeleted: true, //false
     });
   }
 
-  async findByEmail(email: string) {
+  async findBy(criteria: { id?: number; email?: string; nickname?: string }) {
     return await this.userRepository.findOne({
-      where: {
-        email,
-      },
+      where: criteria,
     });
   }
 
-  async findByNickname(nickname: string) {
-    return await this.userRepository.findOne({
-      where: {
-        nickname,
-      },
-    });
-  }
+  async softDeleteUser(id: number): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id } });
 
-  async deleteUser(id: number): Promise<void> {
-    await this.userRepository.delete({ id: id });
+    user.deleted_at = new Date();
+    await this.userRepository.save(user);
   }
 }

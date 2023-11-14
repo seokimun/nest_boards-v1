@@ -10,7 +10,7 @@ import {
 
 import * as bcrypt from 'bcrypt';
 
-@Entity( { name: 'user' })
+@Entity({ name: 'user' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,7 +31,7 @@ export class UserEntity {
   updated_at: Date;
 
   @DeleteDateColumn()
-  deleted_at: Date;
+  deleted_at: Date | null;
 
   @BeforeInsert()
   private beforeInsert() {

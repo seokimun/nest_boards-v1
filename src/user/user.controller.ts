@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -22,13 +24,13 @@ export class UserController {
   async signup(@Body() authDTO: AuthDTO.SignUp) {
     const { email, nickname } = authDTO;
 
-    const hasEmail = await this.userService.findByEmail(email);
-    if (hasEmail) {
+    const userByEmail = await this.userService.findBy({ email });
+    if (userByEmail) {
       throw new ConflictException('이미 사용중인 이메일 입니다.');
     }
 
-    const hasNickname = await this.userService.findByNickname(nickname);
-    if (hasNickname) {
+    const userByNickname = await this.userService.findBy({ nickname });
+    if (userByNickname) {
       throw new ConflictException('이미 사용중인 닉네임 입니다.');
     }
 
@@ -48,25 +50,48 @@ export class UserController {
     });
   }
 
-  // 특정유저 조회
+  // 특정유저 조회(id값)
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<UserEntity[]> {
-    const userList = await this.userService.findById(+id);
-    return Object.assign({
-      data: userList,
-      statusCode: 200,
-      statusMsg: '유저가 성공적으로 조회되었습니다',
-    });
+  async findByOne(@Param('id') id: number): Promise<{
+    data: UserEntity | null;
+    statusCode: number;
+    statusMsg: string;
+  }> {
+    try {
+      const user = await this.userService.findBy({ id });
+      return {
+        data: user,
+        statusCode: 200,
+        statusMsg: `${id} 유저조회 완료`,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('서버 오류', error.message);
+    }
   }
 
-  // 삭제
+  // 특정유저 조회(nickname)
+  @Get('user/:nickname')
+  async findBy(@Param('nickname') nickname: string): Promise<{
+    data: UserEntity | null;
+    statusCode: number;
+    statusMsg: string;
+  }> {
+    try {
+      const user = await this.userService.findBy({ nickname });
+      return {
+        data: user,
+        statusCode: 200,
+        statusMsg: `${nickname} 유저조회 완료`,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('서버 오류', error.message);
+    }
+  }
+
+  // 유저삭제(softDelete)
   @Delete(':id')
-  async deleteUser(@Param('id') id: number): Promise<UserEntity[]> {
-    await this.userService.deleteUser(+id);
-    return Object.assign({
-      data: { userId: id },
-      statusCode: 200,
-      statusMsg: '삭제완료',
-    });
+  async softDeleteUser(@Param('id') id: number): Promise<{ message: string }> {
+    await this.userService.softDeleteUser(id);
+    return { message: '사용자가 성공적으로 Soft Delete되었습니다.' };
   }
 }
