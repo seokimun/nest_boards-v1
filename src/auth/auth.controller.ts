@@ -1,6 +1,4 @@
 import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
-
-import { JwtService } from '@nestjs/jwt/dist';
 import * as bcrypt from 'bcrypt';
 
 import { AuthDTO } from './dto/authDto';

@@ -92,6 +92,6 @@ export class UserController {
   @Delete(':id')
   async softDeleteUser(@Param('id') id: number): Promise<{ message: string }> {
     await this.userService.softDeleteUser(id);
-    return { message: '사용자가 성공적으로 Soft Delete되었습니다.' };
+    return { message: '해당 유저가 Soft Delete되었습니다' };
   }
 }

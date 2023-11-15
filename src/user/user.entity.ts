@@ -15,7 +15,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true }) // 동일한 이메일 생성을 막아줌
   email: string;
 
   @Column()
@@ -30,7 +30,7 @@ export class UserEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ nullable: true })
   deleted_at: Date | null;
 
   @BeforeInsert()
