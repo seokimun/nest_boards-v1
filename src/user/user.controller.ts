@@ -5,18 +5,15 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
-  NotFoundException,
   Param,
-  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import { AuthDTO } from 'src/auth/dto/authDto';
 import { UserEntity } from './user.entity';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -40,7 +37,7 @@ export class UserController {
   }
 
   // 모든유저 조회
-  @Get('list')
+  @Get()
   async findAll(): Promise<UserEntity[]> {
     const userList = await this.userService.findAll();
     return Object.assign({
@@ -57,27 +54,25 @@ export class UserController {
     statusCode: number;
     statusMsg: string;
   }> {
-    try {
-      const user = await this.userService.findBy({ id });
-      return {
-        data: user,
-        statusCode: 200,
-        statusMsg: `${id} 유저조회 완료`,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('서버 오류', error.message);
-    }
+    const user = await this.userService.findBy({ where: { id: id } });
+    return {
+      data: user,
+      statusCode: 200,
+      statusMsg: `${id} 유저조회 완료`,
+    };
   }
 
   // 특정유저 조회(nickname)
-  @Get('user/:nickname')
+  @Get('nickname/:nickname')
   async findBy(@Param('nickname') nickname: string): Promise<{
     data: UserEntity | null;
     statusCode: number;
     statusMsg: string;
   }> {
     try {
-      const user = await this.userService.findBy({ nickname });
+      const user = await this.userService.findBy({
+        where: { nickname: nickname },
+      });
       return {
         data: user,
         statusCode: 200,
