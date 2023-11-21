@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
-  console.log('서버 실행중...');
+  const configService = app.get(ConfigService);
+  const port = configService.get('NODE_SERVER_PORT');
+  await app.listen(port);
+  console.log(`${port}번 포트 서버 실행중...`);
 }
 bootstrap();

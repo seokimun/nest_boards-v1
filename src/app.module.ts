@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { TypeOrmConfig } from './database/typerom.config';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -13,6 +14,9 @@ import { AuthModule } from './auth/auth.module';
       dataSourceFactory: async (options: DataSourceOptions) => {
         return new DataSource(options).initialize();
       },
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
     UserModule,
     UserEntity,

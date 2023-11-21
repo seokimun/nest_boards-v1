@@ -49,7 +49,7 @@ export class UserController {
 
   // 특정유저 조회(id값)
   @Get(':id')
-  async findByOne(@Param('id') id: number): Promise<{
+  async findById(@Param('id') id: number): Promise<{
     data: UserEntity | null;
     statusCode: number;
     statusMsg: string;
@@ -62,9 +62,28 @@ export class UserController {
     };
   }
 
+  // 특정유저 조회(Email)
+  @Get('email:/email')
+  async findByEmail(@Param('email') email: string): Promise<{
+    data: UserEntity | null;
+    statusCode: number;
+    statusMsg: string;
+  }> {
+    try {
+      const user = await this.userService.findBy({ where: { email: email } });
+      return {
+        data: user,
+        statusCode: 200,
+        statusMsg: `${email} 유저조회 완료`,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('서버 오류', error.message);
+    }
+  }
+
   // 특정유저 조회(nickname)
   @Get('nickname/:nickname')
-  async findBy(@Param('nickname') nickname: string): Promise<{
+  async findByNickname(@Param('nickname') nickname: string): Promise<{
     data: UserEntity | null;
     statusCode: number;
     statusMsg: string;
