@@ -34,7 +34,7 @@ export class UserEntity {
   deleted_at: Date | null;
 
   @BeforeInsert()
-  private beforeInsert() {
+  public beforeInsert() {
     this.password = bcrypt.hashSync(this.password, 10);
   }
 }

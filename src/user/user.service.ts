@@ -37,7 +37,11 @@ export class UserService {
   async softDeleteUser(id: number): Promise<void> {
     const user = await this.userRepository.findOne({ where: { id } });
 
-    user.deleted_at = new Date();
-    await this.userRepository.save(user);
+    if (user) {
+      if (!user.deleted_at) {
+        user.deleted_at = new Date();
+        await this.userRepository.save(user);
+      }
+    }
   }
 }

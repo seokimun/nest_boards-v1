@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { TypeOrmConfig } from './database/typerom.config';
@@ -19,7 +18,6 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     UserModule,
-    UserEntity,
     AuthModule,
   ],
 })

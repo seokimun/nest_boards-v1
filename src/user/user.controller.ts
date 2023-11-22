@@ -21,12 +21,16 @@ export class UserController {
   async signup(@Body() authDTO: AuthDTO.SignUp) {
     const { email, nickname } = authDTO;
 
-    const userByEmail = await this.userService.findBy({ email });
+    const userByEmail = await this.userService.findBy({
+      where: { email: email },
+    });
     if (userByEmail) {
       throw new ConflictException('이미 사용중인 이메일 입니다.');
     }
 
-    const userByNickname = await this.userService.findBy({ nickname });
+    const userByNickname = await this.userService.findBy({
+      where: { nickname: nickname },
+    });
     if (userByNickname) {
       throw new ConflictException('이미 사용중인 닉네임 입니다.');
     }
