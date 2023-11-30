@@ -6,9 +6,9 @@ import { Repository } from 'typeorm/repository/Repository';
 
 @Injectable()
 export class UserService {
-  findByPassword(password: string) {
-    throw new Error('Method not implemented.');
-  }
+  // findByPassword(password: string) {
+  //   throw new Error('Method not implemented.');
+  // }
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,

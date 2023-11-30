@@ -5,6 +5,8 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { TypeOrmConfig } from './database/typerom.config';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { BoardModule } from './boards/boards.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -14,11 +16,15 @@ import { ConfigModule } from '@nestjs/config';
         return new DataSource(options).initialize();
       },
     }),
+    MulterModule.register({
+      dest: './upload',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     UserModule,
     AuthModule,
+    BoardModule,
   ],
 })
 export class AppModule {
