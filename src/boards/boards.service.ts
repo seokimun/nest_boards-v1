@@ -19,9 +19,6 @@ export class BoardService {
     return board;
   }
 
-  // 이미지 업로드
-  
-
   // 전체조회
   async findAll(): Promise<BoardEntity[]> {
     return this.boardRepository.find({

@@ -24,8 +24,6 @@ export class BoardController {
     return board;
   }
 
-  // 이미지 업로드
-
   // 게시판 전체조회
   @Get()
   async findAll(): Promise<BoardEntity[]> {

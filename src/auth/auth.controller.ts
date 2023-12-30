@@ -15,7 +15,7 @@ export class AuthController {
   constructor(private readonly userService: UserService) {}
 
   // 로그인
-  @Post('/login')
+  @Post('/signin')
   async signin(@Body() authDTO: AuthDTO.SignIn) {
     const { email, password } = authDTO;
 
